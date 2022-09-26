@@ -1,9 +1,9 @@
 from math import sqrt
+from plottingHelper import PlottingHelper
 from rmse_helper import RmseHelper
 import os, shutil
 
 import csv
-import matplotlib.pyplot as plt
 
 inputdir = 'C:\\rinex_subinterval_analyzer\\input'
 outputdir = 'C:\\rinex_subinterval_analyzer\\output'
@@ -180,6 +180,8 @@ with open(summaryTablePath, 'w') as fw:
 
 # Generate 4 BoxPlots for each point:
 
+plottingHelper = PlottingHelper()
+
 for pointNameStr in pointNamesList:
     pointPath = os.path.join(outputdir, 'boxplot_' + pointNameStr)
     os.mkdir(pointPath)
@@ -201,35 +203,7 @@ for pointNameStr in pointNamesList:
         dr_plotData.append(dr_Data)
         dh_plotData.append(dh_Data)
     
-    x_fig = plt.figure(figsize=(19,10))
-    y_fig = plt.figure(figsize=(19,10))
-    r_fig = plt.figure(figsize=(19,10))
-    h_fig = plt.figure(figsize=(19,10))
-
-    x_ax = x_fig.add_subplot(111)
-    y_ax = y_fig.add_subplot(111)
-    r_ax = r_fig.add_subplot(111)
-    h_ax = h_fig.add_subplot(111)
-
-    x_bp = x_ax.boxplot(dx_plotData, labels = intervalsList)
-    y_bp = y_ax.boxplot(dy_plotData, labels = intervalsList)
-    r_bp = r_ax.boxplot(dr_plotData, labels = intervalsList)
-    h_bp = h_ax.boxplot(dh_plotData, labels = intervalsList)
-
-    # Reference line at y = 0:
-    x_ax.axhline(y=0, color='g')
-    y_ax.axhline(y=0, color='g')
-    r_ax.axhline(y=0, color='g')
-    h_ax.axhline(y=0, color='g')
-
-    x_path = os.path.join(pointPath, 'x.png')
-    y_path = os.path.join(pointPath, 'y.png')
-    r_path = os.path.join(pointPath, 'r.png')
-    h_path = os.path.join(pointPath, 'h.png')
-
-    x_fig.savefig(x_path)
-    y_fig.savefig(y_path)
-    r_fig.savefig(r_path)
-    h_fig.savefig(h_path)
-
-    plt.close('all')
+    plottingHelper.prepareAndSaveMultiBoxplot(dx_plotData, intervalsList, os.path.join(pointPath, 'x.png'))
+    plottingHelper.prepareAndSaveMultiBoxplot(dy_plotData, intervalsList, os.path.join(pointPath, 'y.png'))
+    plottingHelper.prepareAndSaveMultiBoxplot(dr_plotData, intervalsList, os.path.join(pointPath, 'r.png'))
+    plottingHelper.prepareAndSaveMultiBoxplot(dh_plotData, intervalsList, os.path.join(pointPath, 'h.png'))

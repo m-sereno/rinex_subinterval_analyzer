@@ -1,4 +1,5 @@
 from math import sqrt
+from infoTextParser import InfoTextParser
 from plottingHelper import PlottingHelper
 from rmse_helper import RmseHelper
 import os, shutil
@@ -68,28 +69,29 @@ for subdir, dirs, files in os.walk(inputdir):
         with open(fullPath, encoding="utf8") as f:
             lines = f.readlines()
 
-            lineToCheck = lines[2]
-            if lineToCheck == "Arquivo não processado!\n":
+            infoText = InfoTextParser(lines)
+
+            if(infoText.notProcessed()):
                 print('Failed to process %s.' % (fullPath))
                 continue
 
-            antennaLine = lines[6]
-            isTopcon = antennaLine == "ANTENA NÃO DISPONÍVEL\n"
+            # Intervalo medido deve ter pelo menos 85% do desejado:
+            trackingTimedelta = infoText.trackingDuration()
+            trk_s = trackingTimedelta.total_seconds()
+            tgt_s = 1 if interval == "base" else int(interval) * 60
+            relativeCoverage = trk_s/tgt_s
+            if relativeCoverage < 0.85:
+                continue
             
-            rinex = lines[1].split(' ')[-1].replace("\n", "")
-            utmn = lines[19].split(' ')[-2]
-            utme = lines[20].split(' ')[-2]
-            hnor = lines[25].split(' ')[-2]
-
             # ==== OBJETO DO PONTO:
             sliceObj = {
                 "name_str": pointName,
                 "int_str": interval,
-                "rinex_str": rinex,
-                "utmn_str": utmn,
-                "utme_str": utme,
-                "hnor_str": hnor,
-                "isTopcon_bool": isTopcon,
+                "rinex_str": infoText.rinex(),
+                "utmn_str": infoText.utmn(),
+                "utme_str": infoText.utme(),
+                "hnor_str": infoText.hnor(),
+                "isTopcon_bool": infoText.isTopcon(),
                 "dx_num": 0,
                 "dy_num": 0,
                 "dr_num": 0,

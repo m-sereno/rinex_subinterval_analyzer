@@ -207,3 +207,29 @@ for pointNameStr in pointNamesList:
     plottingHelper.prepareAndSaveMultiBoxplot(dy_plotData, intervalsList, os.path.join(pointPath, 'y.png'))
     plottingHelper.prepareAndSaveMultiBoxplot(dr_plotData, intervalsList, os.path.join(pointPath, 'r.png'))
     plottingHelper.prepareAndSaveMultiBoxplot(dh_plotData, intervalsList, os.path.join(pointPath, 'h.png'))
+
+
+# Generate a "summary" boxplot for x, y, h and r (considering all points):
+
+dx_plotData = []
+dy_plotData = []
+dr_plotData = []
+dh_plotData = []
+
+for intervalStr in intervalsList:
+    intervalSlices = list(x for x in slicesData if x["int_str"] == intervalStr)
+
+    dx_Data = list(map(lambda x: x["dx_num"], intervalSlices))
+    dy_Data = list(map(lambda x: x["dy_num"], intervalSlices))
+    dr_Data = list(map(lambda x: x["dr_num"], intervalSlices))
+    dh_Data = list(map(lambda x: x["dh_num"], intervalSlices))
+
+    dx_plotData.append(dx_Data)
+    dy_plotData.append(dy_Data)
+    dr_plotData.append(dr_Data)
+    dh_plotData.append(dh_Data)
+
+plottingHelper.prepareAndSaveMultiBoxplot(dx_plotData, intervalsList, os.path.join(outputdir, 'summary_boxplot_x.png'))
+plottingHelper.prepareAndSaveMultiBoxplot(dy_plotData, intervalsList, os.path.join(outputdir, 'summary_boxplot_y.png'))
+plottingHelper.prepareAndSaveMultiBoxplot(dr_plotData, intervalsList, os.path.join(outputdir, 'summary_boxplot_r.png'))
+plottingHelper.prepareAndSaveMultiBoxplot(dh_plotData, intervalsList, os.path.join(outputdir, 'summary_boxplot_h.png'))

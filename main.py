@@ -127,6 +127,10 @@ for i in range(len(slicesData)):
     dr = sqrt(dx*dx + dy*dy)
     dh = float(hnor.replace(',','.')) - float(baseline["hnor_str"].replace(',','.'))
 
+    dx = abs(dx)
+    dy = abs(dy)
+    dh = abs(dh)
+
     slicesData[i]["dy_num"] = dy
     slicesData[i]["dx_num"] = dx
     slicesData[i]["dr_num"] = dr

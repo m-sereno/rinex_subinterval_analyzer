@@ -244,15 +244,23 @@ dh_plotData = []
 for intervalStr in intervalsList:
     intervalSlices = list(x for x in slicesData if x["int_str"] == intervalStr)
 
-    dx_Data = list(map(lambda x: abs(x["dx_num"]), intervalSlices))
-    dy_Data = list(map(lambda x: abs(x["dy_num"]), intervalSlices))
-    dr_Data = list(map(lambda x: abs(x["dr_num"]), intervalSlices))
-    dh_Data = list(map(lambda x: abs(x["dh_num"]), intervalSlices))
+    dx_Data = list(map(lambda x: x["dx_num"], intervalSlices))
+    dy_Data = list(map(lambda x: x["dy_num"], intervalSlices))
+    dr_Data = list(map(lambda x: x["dr_num"], intervalSlices))
+    dh_Data = list(map(lambda x: x["dh_num"], intervalSlices))
 
-    dx_plotData.append(dx_Data)
-    dy_plotData.append(dy_Data)
-    dr_plotData.append(dr_Data)
-    dh_plotData.append(dh_Data)
+    dx_plotData.append(list(map(abs, dx_Data)))
+    dy_plotData.append(list(map(abs, dy_Data)))
+    dr_plotData.append(list(map(abs, dr_Data)))
+    dh_plotData.append(list(map(abs, dh_Data)))
+
+    # Run the grouped normality tests for this subslicing interval:
+    nt_path_x = os.path.join(outputdir, 'NT - ' + intervalStr + ' - dx.png')
+    nt_path_y = os.path.join(outputdir, 'NT - ' + intervalStr + ' - dy.png')
+    nt_path_h = os.path.join(outputdir, 'NT - ' + intervalStr + ' - dh.png')
+    HypothesisTestingHelper.runNormalityTest(dx_Data,'%s dx' % (intervalStr), nt_path_x)
+    HypothesisTestingHelper.runNormalityTest(dy_Data, '%s dy' % (intervalStr), nt_path_y)
+    HypothesisTestingHelper.runNormalityTest(dh_Data, '%s dh' % (intervalStr), nt_path_h)
 
 plottingHelper.prepareAndSaveMultiBoxplot(
     dx_plotData, intervalsList, os.path.join(outputdir, 'summary_boxplot_x.png'),

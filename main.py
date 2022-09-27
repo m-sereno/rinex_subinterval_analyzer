@@ -127,10 +127,6 @@ for i in range(len(slicesData)):
     dr = sqrt(dx*dx + dy*dy)
     dh = float(hnor.replace(',','.')) - float(baseline["hnor_str"].replace(',','.'))
 
-    dx = abs(dx)
-    dy = abs(dy)
-    dh = abs(dh)
-
     slicesData[i]["dy_num"] = dy
     slicesData[i]["dx_num"] = dx
     slicesData[i]["dr_num"] = dr
@@ -187,6 +183,8 @@ with open(summaryTablePath, 'w') as fw:
 # Generate 4 BoxPlots for each point:
 
 plottingHelper = PlottingHelper()
+boxplot_xlabel = 'Duração dos subintervalos (minutos)'
+boxplot_ylabel = 'Diferença (metros)'
 
 for pointNameStr in pointNamesList:
     pointPath = os.path.join(outputdir, 'boxplot_' + pointNameStr)
@@ -199,20 +197,29 @@ for pointNameStr in pointNamesList:
     dh_plotData = []
     for intervalStr in intervalsList:
         intervalSlices = list(x for x in pointSlices if x["int_str"] == intervalStr)
-        dx_Data = list(map(lambda x: x["dx_num"], intervalSlices))
-        dy_Data = list(map(lambda x: x["dy_num"], intervalSlices))
-        dr_Data = list(map(lambda x: x["dr_num"], intervalSlices))
-        dh_Data = list(map(lambda x: x["dh_num"], intervalSlices))
+        dx_Data = list(map(lambda x: abs(x["dx_num"]), intervalSlices))
+        dy_Data = list(map(lambda x: abs(x["dy_num"]), intervalSlices))
+        dr_Data = list(map(lambda x: abs(x["dr_num"]), intervalSlices))
+        dh_Data = list(map(lambda x: abs(x["dh_num"]), intervalSlices))
 
         dx_plotData.append(dx_Data)
         dy_plotData.append(dy_Data)
         dr_plotData.append(dr_Data)
         dh_plotData.append(dh_Data)
     
-    plottingHelper.prepareAndSaveMultiBoxplot(dx_plotData, intervalsList, os.path.join(pointPath, 'x.png'))
-    plottingHelper.prepareAndSaveMultiBoxplot(dy_plotData, intervalsList, os.path.join(pointPath, 'y.png'))
-    plottingHelper.prepareAndSaveMultiBoxplot(dr_plotData, intervalsList, os.path.join(pointPath, 'r.png'))
-    plottingHelper.prepareAndSaveMultiBoxplot(dh_plotData, intervalsList, os.path.join(pointPath, 'h.png'))
+    plottingHelper.prepareAndSaveMultiBoxplot(
+        dx_plotData, intervalsList, os.path.join(pointPath, 'x.png'),
+        pointNameStr + ' - Distribuição do Módulo do Erro para UTME dados diferentes intervalos de fatiamento',
+        boxplot_xlabel, boxplot_ylabel)
+    plottingHelper.prepareAndSaveMultiBoxplot(dy_plotData, intervalsList, os.path.join(pointPath, 'y.png'),
+        pointNameStr + ' - Distribuição do Módulo do Erro para UTMN dados diferentes intervalos de fatiamento',
+        boxplot_xlabel, boxplot_ylabel)
+    plottingHelper.prepareAndSaveMultiBoxplot(dr_plotData, intervalsList, os.path.join(pointPath, 'r.png'),
+        pointNameStr + ' - Distribuição da Distância Euclidiana à coordenada esperada dados diferentes intervalos de fatiamento',
+        boxplot_xlabel, boxplot_ylabel)
+    plottingHelper.prepareAndSaveMultiBoxplot(dh_plotData, intervalsList, os.path.join(pointPath, 'h.png'),
+        pointNameStr + ' - Distribuição do Módulo do Erro para HNOR dados diferentes intervalos de fatiamento',
+        boxplot_xlabel, boxplot_ylabel)
 
 
 # Generate a "summary" boxplot for x, y, h and r (considering all points):
@@ -225,17 +232,29 @@ dh_plotData = []
 for intervalStr in intervalsList:
     intervalSlices = list(x for x in slicesData if x["int_str"] == intervalStr)
 
-    dx_Data = list(map(lambda x: x["dx_num"], intervalSlices))
-    dy_Data = list(map(lambda x: x["dy_num"], intervalSlices))
-    dr_Data = list(map(lambda x: x["dr_num"], intervalSlices))
-    dh_Data = list(map(lambda x: x["dh_num"], intervalSlices))
+    dx_Data = list(map(lambda x: abs(x["dx_num"]), intervalSlices))
+    dy_Data = list(map(lambda x: abs(x["dy_num"]), intervalSlices))
+    dr_Data = list(map(lambda x: abs(x["dr_num"]), intervalSlices))
+    dh_Data = list(map(lambda x: abs(x["dh_num"]), intervalSlices))
 
     dx_plotData.append(dx_Data)
     dy_plotData.append(dy_Data)
     dr_plotData.append(dr_Data)
     dh_plotData.append(dh_Data)
 
-plottingHelper.prepareAndSaveMultiBoxplot(dx_plotData, intervalsList, os.path.join(outputdir, 'summary_boxplot_x.png'))
-plottingHelper.prepareAndSaveMultiBoxplot(dy_plotData, intervalsList, os.path.join(outputdir, 'summary_boxplot_y.png'))
-plottingHelper.prepareAndSaveMultiBoxplot(dr_plotData, intervalsList, os.path.join(outputdir, 'summary_boxplot_r.png'))
-plottingHelper.prepareAndSaveMultiBoxplot(dh_plotData, intervalsList, os.path.join(outputdir, 'summary_boxplot_h.png'))
+plottingHelper.prepareAndSaveMultiBoxplot(
+    dx_plotData, intervalsList, os.path.join(outputdir, 'summary_boxplot_x.png'),
+    'Distribuição do Módulo do Erro para UTME dados diferentes intervalos de fatiamento',
+    boxplot_xlabel, boxplot_ylabel)
+plottingHelper.prepareAndSaveMultiBoxplot(
+    dy_plotData, intervalsList, os.path.join(outputdir, 'summary_boxplot_y.png'),
+    'Distribuição do Módulo do Erro para UTMN dados diferentes intervalos de fatiamento',
+    boxplot_xlabel, boxplot_ylabel)
+plottingHelper.prepareAndSaveMultiBoxplot(
+    dr_plotData, intervalsList, os.path.join(outputdir, 'summary_boxplot_r.png'),
+    'Distribuição da Distância Euclidiana à coordenada esperada dados diferentes intervalos de fatiamento',
+    boxplot_xlabel, boxplot_ylabel)
+plottingHelper.prepareAndSaveMultiBoxplot(
+    dh_plotData, intervalsList, os.path.join(outputdir, 'summary_boxplot_h.png'),
+    'Distribuição do Módulo do Erro para HNOR dados diferentes intervalos de fatiamento',
+    boxplot_xlabel, boxplot_ylabel)

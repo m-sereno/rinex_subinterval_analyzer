@@ -26,7 +26,7 @@ class HypothesisTestingHelper():
         mu, std = stats.norm.fit(data)
 
         hist_color = 'g' if is_normal else 'r'
-        plt.hist(data, bins=15, density=True, alpha=0.6, color=hist_color)
+        plt.hist(data, bins=30, density=True, alpha=0.6, color=hist_color)
 
         xmin, xmax = plt.xlim()
         pdf_x = np.linspace(xmin, xmax, 100)

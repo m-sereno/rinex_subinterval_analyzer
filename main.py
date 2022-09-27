@@ -1,4 +1,5 @@
 from math import sqrt
+from hypothesisTestingHelper import HypothesisTestingHelper
 from infoTextParser import InfoTextParser
 from plottingHelper import PlottingHelper
 from rmse_helper import RmseHelper
@@ -197,15 +198,23 @@ for pointNameStr in pointNamesList:
     dh_plotData = []
     for intervalStr in intervalsList:
         intervalSlices = list(x for x in pointSlices if x["int_str"] == intervalStr)
-        dx_Data = list(map(lambda x: abs(x["dx_num"]), intervalSlices))
-        dy_Data = list(map(lambda x: abs(x["dy_num"]), intervalSlices))
-        dr_Data = list(map(lambda x: abs(x["dr_num"]), intervalSlices))
-        dh_Data = list(map(lambda x: abs(x["dh_num"]), intervalSlices))
+        dx_Data = list(map(lambda x: x["dx_num"], intervalSlices))
+        dy_Data = list(map(lambda x: x["dy_num"], intervalSlices))
+        dr_Data = list(map(lambda x: x["dr_num"], intervalSlices))
+        dh_Data = list(map(lambda x: x["dh_num"], intervalSlices))
 
-        dx_plotData.append(dx_Data)
-        dy_plotData.append(dy_Data)
-        dr_plotData.append(dr_Data)
-        dh_plotData.append(dh_Data)
+        dx_plotData.append(list(map(abs, dx_Data)))
+        dy_plotData.append(list(map(abs, dy_Data)))
+        dr_plotData.append(list(map(abs, dr_Data)))
+        dh_plotData.append(list(map(abs, dh_Data)))
+
+        # Run the normality tests for this set of datapoints:
+        nt_path_x = os.path.join(pointPath, intervalStr + ' - dx.png')
+        nt_path_y = os.path.join(pointPath, intervalStr + ' - dy.png')
+        nt_path_h = os.path.join(pointPath, intervalStr + ' - dh.png')
+        HypothesisTestingHelper.runNormalityTest(dx_Data,'%s %s dx' % (pointNameStr, intervalStr), nt_path_x)
+        HypothesisTestingHelper.runNormalityTest(dy_Data, '%s %s dy' % (pointNameStr, intervalStr), nt_path_y)
+        HypothesisTestingHelper.runNormalityTest(dh_Data, '%s %s dh' % (pointNameStr, intervalStr), nt_path_h)
     
     plottingHelper.prepareAndSaveMultiBoxplot(
         dx_plotData, intervalsList, os.path.join(pointPath, 'x.png'),

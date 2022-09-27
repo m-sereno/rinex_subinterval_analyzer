@@ -188,7 +188,7 @@ boxplot_xlabel = 'Duração dos subintervalos (minutos)'
 boxplot_ylabel = 'Diferença (metros)'
 
 for pointNameStr in pointNamesList:
-    pointPath = os.path.join(outputdir, 'boxplot_' + pointNameStr)
+    pointPath = os.path.join(outputdir, pointNameStr)
     os.mkdir(pointPath)
 
     pointSlices = list(x for x in slicesData if x["name_str"] == pointNameStr)
@@ -209,24 +209,27 @@ for pointNameStr in pointNamesList:
         dh_plotData.append(list(map(abs, dh_Data)))
 
         # Run the normality tests for this set of datapoints:
-        nt_path_x = os.path.join(pointPath, intervalStr + ' - dx.png')
-        nt_path_y = os.path.join(pointPath, intervalStr + ' - dy.png')
-        nt_path_h = os.path.join(pointPath, intervalStr + ' - dh.png')
+        nt_path_x = os.path.join(pointPath, 'NT - ' + intervalStr + ' - dx.png')
+        nt_path_y = os.path.join(pointPath, 'NT - ' + intervalStr + ' - dy.png')
+        nt_path_h = os.path.join(pointPath, 'NT - ' + intervalStr + ' - dh.png')
         HypothesisTestingHelper.runNormalityTest(dx_Data,'%s %s dx' % (pointNameStr, intervalStr), nt_path_x)
         HypothesisTestingHelper.runNormalityTest(dy_Data, '%s %s dy' % (pointNameStr, intervalStr), nt_path_y)
         HypothesisTestingHelper.runNormalityTest(dh_Data, '%s %s dh' % (pointNameStr, intervalStr), nt_path_h)
     
     plottingHelper.prepareAndSaveMultiBoxplot(
-        dx_plotData, intervalsList, os.path.join(pointPath, 'x.png'),
+        dx_plotData, intervalsList, os.path.join(pointPath, 'BOXPLOT_x.png'),
         pointNameStr + ' - Distribuição do Módulo do Erro para UTME dados diferentes intervalos de fatiamento',
         boxplot_xlabel, boxplot_ylabel)
-    plottingHelper.prepareAndSaveMultiBoxplot(dy_plotData, intervalsList, os.path.join(pointPath, 'y.png'),
+    plottingHelper.prepareAndSaveMultiBoxplot(
+        dy_plotData, intervalsList, os.path.join(pointPath, 'BOXPLOT_y.png'),
         pointNameStr + ' - Distribuição do Módulo do Erro para UTMN dados diferentes intervalos de fatiamento',
         boxplot_xlabel, boxplot_ylabel)
-    plottingHelper.prepareAndSaveMultiBoxplot(dr_plotData, intervalsList, os.path.join(pointPath, 'r.png'),
+    plottingHelper.prepareAndSaveMultiBoxplot(
+        dr_plotData, intervalsList, os.path.join(pointPath, 'BOXPLOT_r.png'),
         pointNameStr + ' - Distribuição da Distância Euclidiana à coordenada esperada dados diferentes intervalos de fatiamento',
         boxplot_xlabel, boxplot_ylabel)
-    plottingHelper.prepareAndSaveMultiBoxplot(dh_plotData, intervalsList, os.path.join(pointPath, 'h.png'),
+    plottingHelper.prepareAndSaveMultiBoxplot(
+        dh_plotData, intervalsList, os.path.join(pointPath, 'BOXPLOT_h.png'),
         pointNameStr + ' - Distribuição do Módulo do Erro para HNOR dados diferentes intervalos de fatiamento',
         boxplot_xlabel, boxplot_ylabel)
 

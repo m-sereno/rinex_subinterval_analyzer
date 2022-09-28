@@ -17,6 +17,10 @@ ignoreCount = {
     "default": 1
 }
 
+TOL_UTME = 1.0
+TOL_UTMN = 1.0
+TOL_HNOR = 0.8
+
 point_int_count = {}
 pointNamesList = []
 intervalsList = []
@@ -108,8 +112,7 @@ y_rmseHelper = RmseHelper()
 r_rmseHelper = RmseHelper()
 h_rmseHelper = RmseHelper()
 
-for i in range(len(slicesData)):
-    slice = slicesData[i]
+for i, slice in enumerate(slicesData):
     pointName = slice["name_str"]
     interval = slice["int_str"]
     rinex = slice["rinex_str"]
@@ -255,12 +258,28 @@ for intervalStr in intervalsList:
     dh_plotData.append(list(map(abs, dh_Data)))
 
     # Run the grouped normality tests for this subslicing interval:
+    print('\n')
     nt_path_x = os.path.join(outputdir, 'NT - ' + intervalStr + ' - dx.png')
     nt_path_y = os.path.join(outputdir, 'NT - ' + intervalStr + ' - dy.png')
     nt_path_h = os.path.join(outputdir, 'NT - ' + intervalStr + ' - dh.png')
-    HypothesisTestingHelper.runNormalityTest(dx_Data,'%s dx' % (intervalStr), nt_path_x)
-    HypothesisTestingHelper.runNormalityTest(dy_Data, '%s dy' % (intervalStr), nt_path_y)
-    HypothesisTestingHelper.runNormalityTest(dh_Data, '%s dh' % (intervalStr), nt_path_h)
+    nt_result_x = HypothesisTestingHelper.runNormalityTest(dx_Data,'%s dx' % (intervalStr), nt_path_x)
+    nt_result_y = HypothesisTestingHelper.runNormalityTest(dy_Data, '%s dy' % (intervalStr), nt_path_y)
+    nt_result_h = HypothesisTestingHelper.runNormalityTest(dh_Data, '%s dh' % (intervalStr), nt_path_h)
+
+    # For those successful on the normality test, calculate the probability of error > tol:
+    print("\n ===> " + intervalStr + " min <===")
+    if nt_result_x != None:
+        mu , sigma = nt_result_x
+        p_value = HypothesisTestingHelper.greatErrorProbability(mu, sigma, TOL_UTME)
+        print("P( ||erro(UTME)|| > " + str(TOL_UTME) + " ) = " + str(p_value))
+    if nt_result_y != None:
+        mu , sigma = nt_result_y
+        p_value = HypothesisTestingHelper.greatErrorProbability(mu, sigma, TOL_UTMN)
+        print("P( ||erro(UTMN)|| > " + str(TOL_UTMN) + " ) = " + str(p_value))
+    if nt_result_h != None:
+        mu , sigma = nt_result_h
+        p_value = HypothesisTestingHelper.greatErrorProbability(mu, sigma, TOL_HNOR)
+        print("P( ||erro(HNOR)|| > " + str(TOL_HNOR) + " ) = " + str(p_value))
 
 plottingHelper.prepareAndSaveMultiBoxplot(
     dx_plotData, intervalsList, os.path.join(outputdir, 'summary_boxplot_x.png'),

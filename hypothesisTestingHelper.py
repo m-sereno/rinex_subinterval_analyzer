@@ -4,7 +4,8 @@ from scipy import stats
 
 class HypothesisTestingHelper():
     @staticmethod
-    def runNormalityTest(data:list, dataname:str, savePath):
+    def runNormalityTest(data:list, dataname:str, savePath) -> tuple[float, float] | None:
+        """Returns the mean and standard deviation if the normality test is successful"""
         dataname = "[" + dataname + "]"
 
         n = len(data)
@@ -38,4 +39,15 @@ class HypothesisTestingHelper():
 
         plt.savefig(savePath)
         plt.close()
-        
+
+        return (mu, std)
+    
+    @staticmethod
+    def greatErrorProbability(mu:float, sigma:float, tol:float) -> float:
+        # It is expected that mu = 0... This would mean we could simply make P = 2*p(err>tol)
+        # However, to be accurate, we will use the real mu and make P = p(err > tol) + p(err < -tol)
+
+        p_pos = 1 - stats.norm.cdf(tol, mu, sigma)
+        p_neg = stats.norm.cdf(-tol, mu, sigma)
+
+        return p_pos + p_neg

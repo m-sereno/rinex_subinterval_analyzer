@@ -35,6 +35,9 @@ class RmseHelper():
     def getCount(self, pointName:str, interval:int) -> int:
         dict_key = self.dictKey(pointName, interval)
 
+        if dict_key not in self.point_interval_dict:
+            return 0
+
         count = self.point_interval_dict[dict_key]["count"]
 
         return count

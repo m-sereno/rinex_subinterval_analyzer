@@ -4,13 +4,13 @@ from scipy import stats
 
 class HypothesisTestingHelper():
     @staticmethod
-    def runNormalityTest(data:list, dataname:str, savePath) -> tuple[float, float] | None:
+    def runNormalityTest(data:list, dataname:str, savePath, logger) -> tuple[float, float] | None:
         """Returns the mean and standard deviation if the normality test is successful"""
         dataname = "[" + dataname + "]"
 
         n = len(data)
         if n < 30:
-            print(dataname + " will be ignored (n = " + str(n) + ").")
+            logger.info(dataname + " will be ignored (n = " + str(n) + ").")
             return
 
         k2, p = stats.normaltest(data)
@@ -18,9 +18,9 @@ class HypothesisTestingHelper():
         alpha = 0.05
         is_normal = p < alpha
         if is_normal:  # null hypothesis: x comes from a normal distribution
-            print(dataname + " comes from a normal distribution.")
+            logger.info(dataname + " comes from a normal distribution.")
         else:
-            print(dataname + " DOES NOT COME from a normal distribution!!")
+            logger.info(dataname + " DOES NOT COME from a normal distribution!!")
         
         # === Regardless, generate an image comparing the actual distribution with the "desired" normal distribution...
         

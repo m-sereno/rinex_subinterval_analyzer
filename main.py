@@ -6,3 +6,8 @@ from analyzer import run_analysis
 run_analysis({"isTopcon_bool": True}, "TOPCON")
 
 run_analysis({"isTopcon_bool": False}, "TRIMBLE")
+
+
+# Run the analysis for everything together:
+
+run_analysis({}, "ALL")

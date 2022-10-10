@@ -110,6 +110,7 @@ def run_analysis(filter_obj:dict, folderName:str):
                     "utmn_str": infoText.utmn(),
                     "utme_str": infoText.utme(),
                     "hnor_str": infoText.hnor(),
+                    "interval_str": infoText.interval(),
                     "isTopcon_bool": infoText.isTopcon(),
                     "dx_num": 0,
                     "dy_num": 0,
@@ -190,7 +191,7 @@ def run_analysis(filter_obj:dict, folderName:str):
 
     summaryTablePath = os.path.join(outputdir, "summary.csv")
     with open(summaryTablePath, 'w') as fw:
-        fw.write("POINT;IS_TOPCON;INT;COUNT;RMSE Y;RMSE X;RMSE R;RMSE H;MAX_ERR Y;MAX_ERR X;MAX_ERR R;MAX_ERR H;RINEX Y;RINEX X;RINEX R;RINEX H\n")
+        fw.write("POINT;INTERV;IS_TOPCON;INT;COUNT;RMSE Y;RMSE X;RMSE R;RMSE H;MAX_ERR Y;MAX_ERR X;MAX_ERR R;MAX_ERR H;RINEX Y;RINEX X;RINEX R;RINEX H\n")
         for pointNameStr in pointNamesList:
             for intervalStr in intervalsList:
                 loadingBar.next()
@@ -215,9 +216,11 @@ def run_analysis(filter_obj:dict, folderName:str):
                 (maxE_h, rin_h) = h_rmseHelper.getMaxError(pointNameStr, intervalInt)
                 maxE_h = str(maxE_h).replace('.',',')
 
-                isTopcon = next(x for x in slicesData if x["int_str"] == intervalStr)["isTopcon_bool"]
+                slice = next(x for x in slicesData if x["int_str"] == intervalStr)
+                isTopcon = slice["isTopcon_bool"]
+                intervStr = slice["interval_str"]
 
-                fw.write(';'.join([pointNameStr, str(isTopcon), intervalStr, count,
+                fw.write(';'.join([pointNameStr, intervStr, str(isTopcon), intervalStr, count,
                     rmse_y, rmse_x, rmse_r, rmse_h,
                     maxE_y, maxE_x, maxE_r, maxE_h,
                     rin_y, rin_x, rin_r, rin_h]) + '\n')
@@ -234,9 +237,14 @@ def run_analysis(filter_obj:dict, folderName:str):
 
     for pointNameStr in pointNamesList:
         pointPath = os.path.join(outputdir, pointNameStr)
-        os.mkdir(pointPath)
 
         pointSlices = list(x for x in slicesData if x["name_str"] == pointNameStr)
+        sliceCount = len(pointSlices)
+        if sliceCount == 0:
+            loadingBar.next(intervalCount)
+            continue
+        os.mkdir(pointPath)
+        
         dx_plotData = []
         dy_plotData = []
         dr_plotData = []

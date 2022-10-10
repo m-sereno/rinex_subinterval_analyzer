@@ -25,6 +25,9 @@ class InfoTextParser():
     
     def hnor(self) -> str:
         return self.lines[25].split(' ')[-2]
+
+    def interval(self) -> str:
+        return self.lines[8].split(' ')[-1].replace("\n", "")
     
     def startTime(self) -> datetime:
         startTimeLine = self.lines[3]

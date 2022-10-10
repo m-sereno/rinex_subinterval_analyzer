@@ -31,9 +31,9 @@ def run_analysis(filter_obj:dict, folderName:str):
         "default": 1
     }
 
-    TOL_UTME = 1.0
-    TOL_UTMN = 1.0
-    TOL_HNOR = 0.8
+    TOL_UTME = 1.0625
+    TOL_UTMN = 1.0625
+    TOL_HNOR = 0.8350
 
     point_int_count = {}
     pointNamesList = []
@@ -216,7 +216,7 @@ def run_analysis(filter_obj:dict, folderName:str):
                 (maxE_h, rin_h) = h_rmseHelper.getMaxError(pointNameStr, intervalInt)
                 maxE_h = str(maxE_h).replace('.',',')
 
-                slice = next(x for x in slicesData if x["int_str"] == intervalStr)
+                slice = next(x for x in slicesData if x["int_str"] == intervalStr and x["name_str"] == pointNameStr)
                 isTopcon = slice["isTopcon_bool"]
                 intervStr = slice["interval_str"]
 
@@ -272,19 +272,19 @@ def run_analysis(filter_obj:dict, folderName:str):
         
         plottingHelper.prepareAndSaveMultiBoxplot(
             dx_plotData, intervalsList, os.path.join(pointPath, 'BOXPLOT_x.png'),
-            pointNameStr + ' - Distribuição do Módulo do Erro para UTME dados diferentes intervalos de fatiamento',
+            pointNameStr + ' - Distribuição do Módulo do Erro para UTME \n dados diferentes intervalos de fatiamento',
             boxplot_xlabel, boxplot_ylabel)
         plottingHelper.prepareAndSaveMultiBoxplot(
             dy_plotData, intervalsList, os.path.join(pointPath, 'BOXPLOT_y.png'),
-            pointNameStr + ' - Distribuição do Módulo do Erro para UTMN dados diferentes intervalos de fatiamento',
+            pointNameStr + ' - Distribuição do Módulo do Erro para UTMN \n dados diferentes intervalos de fatiamento',
             boxplot_xlabel, boxplot_ylabel)
         plottingHelper.prepareAndSaveMultiBoxplot(
             dr_plotData, intervalsList, os.path.join(pointPath, 'BOXPLOT_r.png'),
-            pointNameStr + ' - Distribuição da Distância Euclidiana à coordenada esperada dados diferentes intervalos de fatiamento',
+            pointNameStr + ' - Distribuição da Distância Euclidiana à coordenada \n esperada dados diferentes intervalos de fatiamento',
             boxplot_xlabel, boxplot_ylabel)
         plottingHelper.prepareAndSaveMultiBoxplot(
             dh_plotData, intervalsList, os.path.join(pointPath, 'BOXPLOT_h.png'),
-            pointNameStr + ' - Distribuição do Módulo do Erro para HNOR dados diferentes intervalos de fatiamento',
+            pointNameStr + ' - Distribuição do Módulo do Erro para HNOR \n dados diferentes intervalos de fatiamento',
             boxplot_xlabel, boxplot_ylabel)
 
 
@@ -337,19 +337,19 @@ def run_analysis(filter_obj:dict, folderName:str):
 
     plottingHelper.prepareAndSaveMultiBoxplot(
         dx_plotData, intervalsList, os.path.join(outputdir, 'summary_boxplot_x.png'),
-        'Distribuição do Módulo do Erro para UTME dados diferentes intervalos de fatiamento',
+        'Distribuição do Módulo do Erro para UTME \n dados diferentes intervalos de fatiamento',
         boxplot_xlabel, boxplot_ylabel)
     plottingHelper.prepareAndSaveMultiBoxplot(
         dy_plotData, intervalsList, os.path.join(outputdir, 'summary_boxplot_y.png'),
-        'Distribuição do Módulo do Erro para UTMN dados diferentes intervalos de fatiamento',
+        'Distribuição do Módulo do Erro para UTMN \n dados diferentes intervalos de fatiamento',
         boxplot_xlabel, boxplot_ylabel)
     plottingHelper.prepareAndSaveMultiBoxplot(
         dr_plotData, intervalsList, os.path.join(outputdir, 'summary_boxplot_r.png'),
-        'Distribuição da Distância Euclidiana à coordenada esperada dados diferentes intervalos de fatiamento',
+        'Distribuição da Distância Euclidiana à coordenada \n esperada dados diferentes intervalos de fatiamento',
         boxplot_xlabel, boxplot_ylabel)
     plottingHelper.prepareAndSaveMultiBoxplot(
         dh_plotData, intervalsList, os.path.join(outputdir, 'summary_boxplot_h.png'),
-        'Distribuição do Módulo do Erro para HNOR dados diferentes intervalos de fatiamento',
+        'Distribuição do Módulo do Erro para HNOR \n dados diferentes intervalos de fatiamento',
         boxplot_xlabel, boxplot_ylabel)
     
     print('\n')

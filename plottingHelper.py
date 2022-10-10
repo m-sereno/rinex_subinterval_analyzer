@@ -1,5 +1,11 @@
 import matplotlib.pyplot as plt
 
+font = {'family': 'sans-serif',
+        'color':  'black',
+        'weight': 'normal',
+        'size': 28,
+        }
+
 class PlottingHelper():
     @staticmethod
     def prepareAndSaveMultiBoxplot(data:list, labels:list, savePath,
@@ -13,9 +19,11 @@ class PlottingHelper():
         # Reference line at y = 0:
         ax.axhline(y=0, color='g')
 
-        plt.title(title)
-        plt.xlabel(xleg)
-        plt.ylabel(yleg)
+        plt.title(title, fontdict=font)
+        plt.xlabel(xleg, fontdict=font)
+        plt.ylabel(yleg, fontdict=font)
+        plt.xticks(fontsize=22)
+        plt.yticks(fontsize=22)
 
         fig.savefig(savePath)
         plt.close()

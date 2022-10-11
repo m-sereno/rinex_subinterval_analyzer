@@ -1,9 +1,10 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
 font = {'family': 'sans-serif',
         'color':  'black',
         'weight': 'normal',
-        'size': 28,
+        'size': 30,
         }
 
 class PlottingHelper():
@@ -22,8 +23,8 @@ class PlottingHelper():
         plt.title(title, fontdict=font)
         plt.xlabel(xleg, fontdict=font)
         plt.ylabel(yleg, fontdict=font)
-        plt.xticks(fontsize=22)
-        plt.yticks(fontsize=22)
+        plt.xticks(fontsize=24)
+        plt.yticks(fontsize=24)
 
         fig.savefig(savePath)
         plt.close()

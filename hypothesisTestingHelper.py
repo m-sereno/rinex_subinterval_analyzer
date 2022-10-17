@@ -2,6 +2,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
 
+font = {'family': 'sans-serif',
+        'color':  'black',
+        'weight': 'normal',
+        'size': 16,
+        }
+
 class HypothesisTestingHelper():
     @staticmethod
     def runNormalityTest(data:list, dataname:str, savePath, logger) -> tuple[float, float] | None:
@@ -35,7 +41,9 @@ class HypothesisTestingHelper():
 
         plt.plot(pdf_x, pdf_p, 'k', linewidth=2)
         title = dataname + " VS. dist. normal com µ = {:.2f}, σ = {:.2f}".format(mu, std)
-        plt.title(title)
+        plt.title(title, fontdict=font)
+        plt.xticks(fontsize=16)
+        plt.yticks(fontsize=16)
 
         plt.savefig(savePath)
         plt.close()
